@@ -18,7 +18,7 @@ export class User extends CommonEntity {
 
   @Column({ default: 'https://i.pravatar.cc/300' })
   @IsUrl()
-  avatar: boolean;
+  avatar: string;
 
   @Column({ unique: true })
   @IsEmail()
