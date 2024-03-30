@@ -1,7 +1,10 @@
 import { Exclude } from 'class-transformer';
 import { IsEmail, IsNotEmpty, IsString, IsUrl, Length } from 'class-validator';
 import { CommonEntity } from 'src/common-entity/common-entity';
-import { Entity, Column } from 'typeorm';
+import { Offer } from 'src/offers/entities/offer.entity';
+import { Wish } from 'src/wishes/entities/wish.entity';
+import { Wishlist } from 'src/wishlists/entities/wishlist.entity';
+import { Entity, Column, OneToMany } from 'typeorm';
 
 @Entity()
 export class User extends CommonEntity {
@@ -28,4 +31,13 @@ export class User extends CommonEntity {
   @IsString()
   @Exclude()
   password: string;
+
+  @OneToMany(() => Wish, (wish) => wish.owner)
+  wishes: Wish[];
+
+  @OneToMany(() => Offer, (offer) => offer.user)
+  offers: Offer[];
+
+  @OneToMany(() => Wishlist, (wishlist) => wishlist.owner)
+  wishlists: Wishlist[];
 }

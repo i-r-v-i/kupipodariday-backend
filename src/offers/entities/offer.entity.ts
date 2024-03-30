@@ -1,6 +1,8 @@
-import { IsNumber, IsUrl, IsInt, IsBoolean } from 'class-validator';
+import { IsInt, IsBoolean } from 'class-validator';
 import { CommonEntity } from 'src/common-entity/common-entity';
-import { Entity, Column } from 'typeorm';
+import { User } from 'src/users/entities/user.entity';
+import { Wish } from 'src/wishes/entities/wish.entity';
+import { Entity, Column, ManyToOne } from 'typeorm';
 
 @Entity()
 export class Offer extends CommonEntity {
@@ -11,4 +13,10 @@ export class Offer extends CommonEntity {
   @Column({ default: false })
   @IsBoolean()
   hidden: boolean;
+
+  @ManyToOne(() => User, (user) => user.offers)
+  user: User;
+
+  @ManyToOne(() => Wish, (wish) => wish.offers)
+  item: Wish;
 }
