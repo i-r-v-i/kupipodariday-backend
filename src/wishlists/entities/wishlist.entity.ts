@@ -1,4 +1,4 @@
-import { IsInt, IsNumber, IsString, IsUrl, Length } from 'class-validator';
+import { IsString, IsUrl, Length } from 'class-validator';
 import { CommonEntity } from 'src/common-entity/common-entity';
 import { Entity, Column } from 'typeorm';
 
