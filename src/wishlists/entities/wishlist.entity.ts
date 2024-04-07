@@ -2,7 +2,7 @@ import { IsString, IsUrl, Length } from 'class-validator';
 import { CommonEntity } from 'src/common-entity/common-entity';
 import { User } from 'src/users/entities/user.entity';
 import { Wish } from 'src/wishes/entities/wish.entity';
-import { Entity, Column, ManyToOne, ManyToMany } from 'typeorm';
+import { Entity, Column, ManyToOne, ManyToMany, JoinTable } from 'typeorm';
 
 @Entity()
 export class Wishlist extends CommonEntity {
@@ -20,9 +20,10 @@ export class Wishlist extends CommonEntity {
   @IsUrl()
   image: string;
 
-  @ManyToOne(() => User, (user) => user.wishlists)
-  owner: User;
+  //   @ManyToOne(() => User, (user) => user.wishlists)
+  //   owner: User;
 
-  @ManyToMany(() => Wish, (wish) => wish.wishlists)
-  items: Wish[];
+  //   @ManyToMany(() => Wish, (wish) => wish.wishlists)
+  //   @JoinTable()
+  //   items: Wish[];
 }

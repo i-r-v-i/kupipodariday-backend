@@ -1,16 +1,16 @@
 import { Module } from '@nestjs/common';
-// import { AppController } from './app.controller';
-// import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { WishesController } from './wishes/wishes.controller';
-import { WishesService } from './wishes/wishes.service';
 import { WishesModule } from './wishes/wishes.module';
 import { WishlistsModule } from './wishlists/wishlists.module';
-import { OffersController } from './offers/offers.controller';
-import { OffersService } from './offers/offers.service';
 import { OffersModule } from './offers/offers.module';
+import { AppController } from './app.controller';
+import { User } from './users/entities/user.entity';
+import { Wish } from './wishes/entities/wish.entity';
+import { Wishlist } from './wishlists/entities/wishlist.entity';
+import { Offer } from './offers/entities/offer.entity';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -22,15 +22,16 @@ import { OffersModule } from './offers/offers.module';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      entities: [],
+      entities: [User, Wish, Wishlist, Offer],
       synchronize: true,
     }),
     UsersModule,
     WishesModule,
     WishlistsModule,
     OffersModule,
+    AuthModule,
   ],
-  controllers: [WishesController, OffersController],
-  providers: [WishesService, OffersService],
+  controllers: [AppController],
+  providers: [],
 })
 export class AppModule {}

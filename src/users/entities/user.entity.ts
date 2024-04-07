@@ -1,9 +1,9 @@
 import { Exclude } from 'class-transformer';
 import { IsEmail, IsNotEmpty, IsString, IsUrl, Length } from 'class-validator';
 import { CommonEntity } from 'src/common-entity/common-entity';
-import { Offer } from 'src/offers/entities/offer.entity';
-import { Wish } from 'src/wishes/entities/wish.entity';
-import { Wishlist } from 'src/wishlists/entities/wishlist.entity';
+// import { Offer } from 'src/offers/entities/offer.entity';
+// import { Wish } from 'src/wishes/entities/wish.entity';
+// import { Wishlist } from 'src/wishlists/entities/wishlist.entity';
 import { Entity, Column, OneToMany } from 'typeorm';
 
 @Entity()
@@ -32,12 +32,12 @@ export class User extends CommonEntity {
   @Exclude()
   password: string;
 
-  @OneToMany(() => Wish, (wish) => wish.owner)
-  wishes: Wish[];
+  // @OneToMany(() => Wish, (wish) => wish.owner)
+  // wishes: Wish[];
 
-  @OneToMany(() => Offer, (offer) => offer.user)
-  offers: Offer[];
+  // @OneToMany(() => Offer, (offer) => offer.user)
+  // offers: Offer[];
 
-  @OneToMany(() => Wishlist, (wishlist) => wishlist.owner)
-  wishlists: Wishlist[];
+  // @OneToMany(() => Wishlist, (wishlist) => wishlist.owner)
+  // wishlists: Wishlist[];
 }
