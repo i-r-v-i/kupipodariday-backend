@@ -1,14 +1,38 @@
 import { CreateUserDto } from './dto/create-user.dto';
-import { Injectable } from '@nestjs/common';
-// import { Repository } from 'typeorm';
-// import { InjectRepository } from '@nestjs/typeorm';
-// import { User } from './entities/user.entity';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+} from '@nestjs/common';
+import { User } from './entities/user.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
-  create(CreateUserDto: CreateUserDto) {
-    return 'adds new User';
+  constructor(
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+  ) {}
+
+  async create(createUserDto: CreateUserDto) {
+    const existUser = await this.userRepository.findBy([
+      { username: createUserDto.username },
+      { email: createUserDto.email },
+    ]);
+    if (existUser)
+      throw new ConflictException(
+        'Пользователь с таким email или username уже зарегистрирован',
+      );
+    const saltOrRounds = 10;
+    const hash = await bcrypt.hash(createUserDto.password, saltOrRounds);
+    const newUser = await this.userRepository.save({
+      ...createUserDto,
+      password: hash,
+    });
+    return newUser;
   }
 
   findAll() {
@@ -19,7 +43,7 @@ export class UsersService {
     return `retutns ${id} user`;
   }
 
-  update(id: number, UpdateUserDto: UpdateUserDto) {
+  update(id: number, updateUserDto: UpdateUserDto) {
     return `update user with ${id}`;
   }
 
@@ -27,10 +51,7 @@ export class UsersService {
     return `delete user with ${id}`;
   }
 }
-//   constructor(
-//     @InjectRepository(User)
-//     private readonly userRepository: Repository<User>,
-//   ) {}
+
 //   async findAll(): Promise<User[]> {
 //     return this.userRepository.find();
 //   }

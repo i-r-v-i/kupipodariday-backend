@@ -37,12 +37,12 @@ export class Wish extends CommonEntity {
   @IsNumber()
   copied: number;
 
-  //   @ManyToOne(() => User, (user) => user.wishes)
-  //   owner: User;
+  @ManyToOne(() => User, (user) => user.wishes)
+  owner: User;
 
-  //   @ManyToMany(() => Wishlist, (wishlist) => wishlist.items)
-  //   wishlists: Wishlist[];
+  @ManyToMany(() => Wishlist, (wishlist) => wishlist.items)
+  wishlists: Wishlist[];
 
-  //   @OneToMany(() => Offer, (offer) => offer.item)
-  //   offers: Offer[];
+  @OneToMany(() => Offer, (offer) => offer.item)
+  offers: Offer[];
 }

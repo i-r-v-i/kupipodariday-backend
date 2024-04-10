@@ -20,10 +20,10 @@ export class Wishlist extends CommonEntity {
   @IsUrl()
   image: string;
 
-  //   @ManyToOne(() => User, (user) => user.wishlists)
-  //   owner: User;
+  @ManyToOne(() => User, (user) => user.wishlists)
+  owner: User;
 
-  //   @ManyToMany(() => Wish, (wish) => wish.wishlists)
-  //   @JoinTable()
-  //   items: Wish[];
+  @ManyToMany(() => Wish, (wish) => wish.wishlists)
+  @JoinTable()
+  items: Wish[];
 }

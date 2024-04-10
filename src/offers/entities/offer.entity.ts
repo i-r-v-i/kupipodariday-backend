@@ -14,9 +14,9 @@ export class Offer extends CommonEntity {
   @IsBoolean()
   hidden: boolean;
 
-  //   @ManyToOne(() => User, (user) => user.offers)
-  //   user: User;
+  @ManyToOne(() => User, (user) => user.offers)
+  user: User;
 
-  //   @ManyToOne(() => Wish, (wish) => wish.offers)
-  //   item: Wish;
+  @ManyToOne(() => Wish, (wish) => wish.offers)
+  item: Wish;
 }
