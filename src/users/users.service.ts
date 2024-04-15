@@ -1,9 +1,5 @@
 import { CreateUserDto } from './dto/create-user.dto';
-import {
-  BadRequestException,
-  ConflictException,
-  Injectable,
-} from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { User } from './entities/user.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -22,7 +18,7 @@ export class UsersService {
       { username: createUserDto.username },
       { email: createUserDto.email },
     ]);
-    if (existUser)
+    if (existUser.length > 0)
       throw new ConflictException(
         'Пользователь с таким email или username уже зарегистрирован',
       );
