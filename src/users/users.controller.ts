@@ -30,9 +30,20 @@ export class UsersController {
     return req.user;
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('me/wishes')
+  async getMyWishes(@Request() req) {
+    return await this.usersService.getMyWishes(req.user.id);
+  }
+
   @Get(':username')
   findByUsername(@Param('username') username: string) {
     return this.usersService.findByUsername(username);
+  }
+
+  @Get(':username/wishes')
+  async getUserWishes(@Param('username') username: string) {
+    return await this.usersService.getUserWishes(username);
   }
 
   @Post('find')

@@ -9,12 +9,13 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { Wish } from 'src/wishes/entities/wish.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(Wish) private readonly wishRepository: Repository<Wish>,
   ) {}
 
   findAll() {
@@ -60,6 +61,17 @@ export class UsersService {
     return user;
   }
 
+  async getMyWishes(userId: number) {
+    return await this.wishRepository.findBy({
+      owner: { id: userId },
+    });
+  }
+
+  async getUserWishes(username: string) {
+    return await this.wishRepository.findBy({
+      owner: { username: username },
+    });
+  }
   // async updateUser(id: number, updateUserDto: UpdateUserDto) {
   // if (updateUserDto.password) {
   //   updateUserDto.password = await this.hashService.hashPassword(
