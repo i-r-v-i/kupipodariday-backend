@@ -1,41 +1,53 @@
+import { FindUsersDto } from './dto/find-users.dto';
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
   Post,
-  UsePipes,
-  ValidationPipe,
+  Request,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { User } from './entities/user.entity';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
-  @Post()
-  @UsePipes(new ValidationPipe())
-  create(@Body() CreateUserDto: CreateUserDto) {
-    return this.usersService.create(CreateUserDto);
-  }
+
   @Get()
   findAll() {
     return this.usersService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(id);
+  @UseGuards(JwtAuthGuard)
+  @Get('me')
+  getMe(@Request() req) {
+    return req.user;
   }
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() UpdateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, UpdateUserDto);
+
+  @Get(':username')
+  findByUsername(@Param('username') username: string) {
+    return this.usersService.findByUsername(username);
   }
-  //   @Get()
-  //   findAll(): Promise<User[]> {
-  //     return this.usersService.findAll();
-  //   }
+
+  @Post('find')
+  findMany(@Body() findUserDto: FindUsersDto) {
+    return this.usersService.findMany(findUserDto.query);
+  }
+
+  // @UseGuards(JwtAuthGuard)
+  // @Patch(':me')
+  // update(@Request() req, @Body() updateUserDto: UpdateUserDto) {
+  //   return this.usersService.updateUser(req.user.id, updateUserDto);
+  // }
+
+  @Delete(':id')
+  remove(@Param('id') id: number) {
+    return this.usersService.remove(id);
+  }
 }

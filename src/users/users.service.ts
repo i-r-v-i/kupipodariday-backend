@@ -1,9 +1,13 @@
 import { CreateUserDto } from './dto/create-user.dto';
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { User } from './entities/user.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, Like } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -13,7 +17,11 @@ export class UsersService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  async create(createUserDto: CreateUserDto) {
+  findAll() {
+    return this.userRepository.find();
+  }
+
+  async createUser(createUserDto: CreateUserDto) {
     const existUser = await this.userRepository.findBy([
       { username: createUserDto.username },
       { email: createUserDto.email },
@@ -31,35 +39,38 @@ export class UsersService {
     return newUser;
   }
 
-  findAll() {
-    return 'all users';
+  findByUsername(username: string) {
+    const user = this.userRepository.findOneBy({ username });
+    if (!user) {
+      throw new NotFoundException('user not Found');
+    }
+    return user;
   }
 
-  async findOne(username: string) {
-    return await this.userRepository.findOne({ where: { username } });
+  async findMany(query: string) {
+    const queryString = Like(`%${query}%`);
+    const user = await this.userRepository.findBy([
+      { username: queryString },
+      { email: queryString },
+    ]);
+
+    if (!user) {
+      throw new NotFoundException(`Пользователь не существует`);
+    }
+    return user;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `update user with ${id}`;
-  }
+  // async updateUser(id: number, updateUserDto: UpdateUserDto) {
+  // if (updateUserDto.password) {
+  //   updateUserDto.password = await this.hashService.hashPassword(
+  //     updateUserDto.password,
+  //   );
+  // }
+  // await this.userRepository.update(id, updateUserDto);
+  // return this.findById(id);
+  // }
 
   remove(id: number) {
-    return `delete user with ${id}`;
+    return this.userRepository.delete(id);
   }
 }
-
-//   async findAll(): Promise<User[]> {
-//     return this.userRepository.find();
-//   }
-//   async findlOne(id: number): Promise<User> {
-//     return this.userRepository.findOneBy({ id });
-//   }
-//   async create(User: User): Promise<User> {
-//     return this.userRepository.save(User);
-//   }
-//   async updateOne(User: User): Promise<User> {
-// return this.userRepository.update(User);
-//   }
-//   async removeOne(User: User): Promise<User> {
-//     return this.userRepository.remove(User);
-//   }
