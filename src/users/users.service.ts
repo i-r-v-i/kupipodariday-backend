@@ -11,6 +11,8 @@ import { Repository, Like } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Wish } from 'src/wishes/entities/wish.entity';
 
+const saltOrRounds = 10;
+
 @Injectable()
 export class UsersService {
   constructor(
@@ -31,7 +33,7 @@ export class UsersService {
       throw new ConflictException(
         'Пользователь с таким email или username уже зарегистрирован',
       );
-    const saltOrRounds = 10;
+
     const hash = await bcrypt.hash(createUserDto.password, saltOrRounds);
     const newUser = await this.userRepository.save({
       ...createUserDto,
@@ -40,8 +42,8 @@ export class UsersService {
     return newUser;
   }
 
-  findByUsername(username: string) {
-    const user = this.userRepository.findOneBy({ username });
+  async findByUsername(username: string) {
+    const user = await this.userRepository.findOneBy({ username });
     if (!user) {
       throw new NotFoundException('user not Found');
     }
@@ -72,15 +74,27 @@ export class UsersService {
       owner: { username: username },
     });
   }
-  // async updateUser(id: number, updateUserDto: UpdateUserDto) {
-  // if (updateUserDto.password) {
-  //   updateUserDto.password = await this.hashService.hashPassword(
-  //     updateUserDto.password,
-  //   );
-  // }
-  // await this.userRepository.update(id, updateUserDto);
-  // return this.findById(id);
-  // }
+
+  async updateUser(userId: number, updateUserDto: UpdateUserDto) {
+    // const user = await this.userRepository.findOneBy({ id: userId });
+
+    if (updateUserDto.password) {
+      updateUserDto.password = await bcrypt.hash(
+        updateUserDto.password,
+        saltOrRounds,
+      );
+    }
+    await this.userRepository.update(userId, updateUserDto);
+    // return this.userRepository.save({ ...user, ...updateUserDto });
+    return await this.userRepository.findOneBy({ id: userId });
+
+    // return this.userRepository.findBy({ id: userId });
+    // const user = await this.userRepository
+    //   .createQueryBuilder('user')
+    //   .where({ id: userId })
+    //   .addSelect('user.email')
+    //   .getOne();
+  }
 
   remove(id: number) {
     return this.userRepository.delete(id);
