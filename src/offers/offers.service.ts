@@ -1,26 +1,71 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateOfferDto } from './dto/create-offer.dto';
-import { UpdateOfferDto } from './dto/update-offer.dto';
+import { Offer } from './entities/offer.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { User } from 'src/users/entities/user.entity';
+import { Wish } from 'src/wishes/entities/wish.entity';
 
 @Injectable()
 export class OffersService {
-  create(createOfferDto: CreateOfferDto) {
-    return 'This action adds a new offer';
+  constructor(
+    @InjectRepository(Offer)
+    private readonly offerRepository: Repository<Offer>,
+    @InjectRepository(Wish) private wishRepository: Repository<Wish>,
+  ) {}
+
+  async createOffer(createOfferDto: CreateOfferDto, user: User) {
+    const wish = await this.wishRepository.findOne({
+      where: { id: createOfferDto.itemId },
+      relations: {
+        offers: true,
+        owner: true,
+      },
+    });
+    if (wish.owner.id === user.id) {
+      throw new ForbiddenException('Нельзя скидываться на свой подарок');
+    }
+
+    if (createOfferDto.amount + wish.raised > wish.price) {
+      throw new BadRequestException(
+        `Сумма собранных средств не может превышать стоимость подарка, Вы можете добавить только недостающую сумму - ${wish.price - wish.raised}`,
+      );
+    }
+
+    await this.offerRepository.save({
+      ...createOfferDto,
+      item: wish,
+      user,
+    });
+
+    await this.wishRepository.increment(
+      { id: wish.id },
+      'raised',
+      createOfferDto.amount,
+    );
   }
 
-  findAll() {
-    return `This action returns all offer`;
+  async findAll() {
+    return await this.offerRepository.find({
+      relations: { user: true, item: true },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} offer`;
-  }
+  async findOne(id: number) {
+    const offer = await this.offerRepository.findOne({
+      where: { id },
+      relations: { user: true, item: true },
+    });
 
-  update(id: number, updateOfferDto: UpdateOfferDto) {
-    return `This action updates a #${id} offer`;
-  }
+    if (!offer) {
+      throw new NotFoundException('Заявка не найдена');
+    }
 
-  remove(id: number) {
-    return `This action removes a #${id} offer`;
+    return offer;
   }
 }
