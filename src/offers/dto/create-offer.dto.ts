@@ -1,4 +1,10 @@
-import { IsBoolean, IsInt, IsNumber, IsPositive } from 'class-validator';
+import {
+  IsBoolean,
+  IsInt,
+  IsNumber,
+  IsOptional,
+  IsPositive,
+} from 'class-validator';
 
 export class CreateOfferDto {
   @IsInt()
@@ -6,6 +12,7 @@ export class CreateOfferDto {
   amount: number;
 
   @IsBoolean()
+  @IsOptional()
   hidden: boolean;
 
   @IsNumber()
