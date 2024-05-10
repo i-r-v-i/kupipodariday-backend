@@ -60,7 +60,7 @@ export class WishlistsService {
       },
     });
     if (!newWishlist) {
-      throw new NotFoundException();
+      throw new NotFoundException('Не удалось найти вишлист по переданному id');
     }
     return newWishlist;
   }
@@ -74,10 +74,7 @@ export class WishlistsService {
     if (wishlist.owner.id !== user.id) {
       throw new ForbiddenException('Нельзя редактировать чужой вишлист');
     }
-    Object.assign(wishlist, updateWishlistDto);
-    await this.wishRepository.save(wishlist);
-
-    return this.wishlistRepository.save(wishlist);
+    return this.wishlistRepository.update(id, updateWishlistDto);
   }
 
   async removeWishlist(id: number) {
