@@ -27,16 +27,6 @@ export class WishesController {
     return this.wishesService.createWish(createWishDto, req.user.id);
   }
 
-  @Get()
-  findAll() {
-    return this.wishesService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: number) {
-    return this.wishesService.findOne(id);
-  }
-
   @Get('last')
   findLast() {
     return this.wishesService.findLast();
@@ -45,6 +35,16 @@ export class WishesController {
   @Get('top')
   findTop() {
     return this.wishesService.findTop();
+  }
+
+  @Get()
+  findAll() {
+    return this.wishesService.findAll();
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: number) {
+    return this.wishesService.findOne(id);
   }
 
   @Patch(':id')
