@@ -11,9 +11,9 @@ export class Wishlist extends CommonEntity {
   @Length(1, 250)
   name: string;
 
-  @Column()
+  @Column({ nullable: true })
   @IsString()
-  @Length(1, 1500)
+  @Length(0, 1500)
   description: string;
 
   @Column()

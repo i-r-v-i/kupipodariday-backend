@@ -20,8 +20,8 @@ export class UsersService {
     @InjectRepository(Wish) private readonly wishRepository: Repository<Wish>,
   ) {}
 
-  findAll() {
-    return this.userRepository.find();
+  async findAll() {
+    return await this.userRepository.find();
   }
 
   async createUser(createUserDto: CreateUserDto) {
@@ -96,7 +96,7 @@ export class UsersService {
     //   .getOne();
   }
 
-  remove(id: number) {
-    return this.userRepository.delete(id);
+  async remove(id: number) {
+    return await this.userRepository.delete(id);
   }
 }

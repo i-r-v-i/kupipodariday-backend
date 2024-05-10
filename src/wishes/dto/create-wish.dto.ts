@@ -18,6 +18,6 @@ export class CreateWishDto {
   price: number;
 
   @IsString()
-  @Length(1, 1024)
-  description: string;
+  @Length(1, 1024, { message: 'должно быть не меньше 1 и не больше 1024' })
+  description?: string;
 }
