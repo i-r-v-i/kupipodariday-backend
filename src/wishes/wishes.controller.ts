@@ -23,8 +23,8 @@ export class WishesController {
   @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe())
   @Post()
-  async createWish(@Body() createWishDto: CreateWishDto, @Request() req) {
-    return await this.wishesService.createWish(createWishDto, req.user.id);
+  createWish(@Body() createWishDto: CreateWishDto, @Request() req) {
+    return this.wishesService.createWish(createWishDto, req.user.id);
   }
 
   @Get()
@@ -35,6 +35,16 @@ export class WishesController {
   @Get(':id')
   findOne(@Param('id') id: number) {
     return this.wishesService.findOne(id);
+  }
+
+  @Get('last')
+  findLast() {
+    return this.wishesService.findLast();
+  }
+
+  @Get('top')
+  findTop() {
+    return this.wishesService.findTop();
   }
 
   @Patch(':id')
@@ -51,5 +61,10 @@ export class WishesController {
   @UseGuards(JwtAuthGuard)
   removeWish(@Param('id') id: number, @Request() req) {
     return this.wishesService.removeWish(id, req.user.id);
+  }
+
+  @Post(':id/copy')
+  copyWithById(@Request() req, @Param('id') id: number) {
+    return this.wishesService.copy(id, req.user);
   }
 }

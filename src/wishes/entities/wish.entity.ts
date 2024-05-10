@@ -1,4 +1,11 @@
-import { IsInt, IsNumber, IsString, IsUrl, Length } from 'class-validator';
+import {
+  IsInt,
+  IsNumber,
+  IsPositive,
+  IsString,
+  IsUrl,
+  Length,
+} from 'class-validator';
 import { CommonEntity } from 'src/common-entity/common-entity';
 import { Offer } from 'src/offers/entities/offer.entity';
 import { User } from 'src/users/entities/user.entity';
@@ -21,11 +28,12 @@ export class Wish extends CommonEntity {
   image: string;
 
   @Column({ type: 'decimal', scale: 2, default: 0 })
-  @IsInt()
+  @IsPositive()
   price: number;
 
   @Column({ type: 'decimal', scale: 2, default: 0 })
-  @IsInt()
+  @IsNumber()
+  @IsPositive()
   raised: number;
 
   @Column()

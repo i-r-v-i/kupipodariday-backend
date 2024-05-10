@@ -8,6 +8,7 @@ import { UpdateWishDto } from './dto/update-wish.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Wish } from './entities/wish.entity';
 import { Repository } from 'typeorm';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class WishesService {
@@ -44,6 +45,24 @@ export class WishesService {
     return wish;
   }
 
+  async findLast() {
+    return await this.wishRepository.find({
+      order: {
+        createdAt: 'DESC',
+      },
+      take: 40,
+    });
+  }
+
+  async findTop() {
+    return await this.wishRepository.find({
+      order: {
+        copied: 'DESC',
+      },
+      take: 20,
+    });
+  }
+
   async updateWish(id: number, updateWishDto: UpdateWishDto, userId: number) {
     const wish = await this.findOne(id);
 
@@ -57,6 +76,26 @@ export class WishesService {
       );
     }
     return await this.wishRepository.update(id, updateWishDto);
+  }
+
+  async copy(id: number, user: User) {
+    const wish = await this.findOne(id);
+    const { name, description, image, link, price } = wish;
+
+    const newWish = this.wishRepository.create({
+      name,
+      link,
+      image,
+      price,
+      description,
+      owner: user,
+    });
+    const copiedWish = await this.wishRepository.save(newWish);
+
+    wish.copied += 1;
+    await this.wishRepository.save(wish);
+
+    return copiedWish;
   }
 
   async removeWish(id: number, userId: number) {

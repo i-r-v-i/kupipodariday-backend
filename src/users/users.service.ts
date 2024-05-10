@@ -76,8 +76,6 @@ export class UsersService {
   }
 
   async updateUser(userId: number, updateUserDto: UpdateUserDto) {
-    // const user = await this.userRepository.findOneBy({ id: userId });
-
     if (updateUserDto.password) {
       updateUserDto.password = await bcrypt.hash(
         updateUserDto.password,
@@ -85,15 +83,7 @@ export class UsersService {
       );
     }
     await this.userRepository.update(userId, updateUserDto);
-    // return this.userRepository.save({ ...user, ...updateUserDto });
     return await this.userRepository.findOneBy({ id: userId });
-
-    // return this.userRepository.findBy({ id: userId });
-    // const user = await this.userRepository
-    //   .createQueryBuilder('user')
-    //   .where({ id: userId })
-    //   .addSelect('user.email')
-    //   .getOne();
   }
 
   async remove(id: number) {

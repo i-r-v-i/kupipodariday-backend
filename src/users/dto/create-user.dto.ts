@@ -29,6 +29,6 @@ export class CreateUserDto {
 
   @IsNotEmpty()
   @IsString()
-  @MinLength(6, { message: 'Password must contain at least 6 characters' })
+  @MinLength(6, { message: 'Пароль должен содержать не менее 6 символов' })
   password: string;
 }
