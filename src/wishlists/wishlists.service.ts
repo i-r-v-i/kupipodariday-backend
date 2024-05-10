@@ -77,11 +77,10 @@ export class WishlistsService {
     if (wishlist.owner.id !== user.id) {
       throw new ForbiddenException('Нельзя редактировать чужой вишлист');
     }
+    Object.assign(wishlist, updateWishlistDto);
+    await this.wishRepository.save(wishlist);
 
-    return this.wishlistRepository.save({
-      ...wishlist,
-      updateWishlistDto,
-    });
+    return this.wishlistRepository.save(wishlist);
   }
 
   async removeWishlist(id: number) {
