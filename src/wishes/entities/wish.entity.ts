@@ -12,7 +12,7 @@ export class Wish extends CommonEntity {
   @Length(1, 250)
   name: string;
 
-  @Column()
+  @Column({ nullable: true })
   @IsUrl()
   link: string;
 
@@ -20,7 +20,7 @@ export class Wish extends CommonEntity {
   @IsUrl()
   image: string;
 
-  @Column({ type: 'decimal', scale: 2 })
+  @Column({ type: 'decimal', scale: 2, default: 0 })
   @IsInt()
   price: number;
 

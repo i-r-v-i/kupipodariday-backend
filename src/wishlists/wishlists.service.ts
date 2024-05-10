@@ -71,9 +71,6 @@ export class WishlistsService {
     user: User,
   ) {
     const wishlist = await this.findOne(id);
-    if (!wishlist) {
-      throw new NotFoundException('Такой вишлист не найден');
-    }
     if (wishlist.owner.id !== user.id) {
       throw new ForbiddenException('Нельзя редактировать чужой вишлист');
     }
@@ -85,9 +82,6 @@ export class WishlistsService {
 
   async removeWishlist(id: number) {
     const wishlist = await this.findOne(id);
-    if (!wishlist) {
-      throw new NotFoundException('Такой вишлист не найден');
-    }
     await this.wishlistRepository.remove(wishlist);
     return wishlist;
   }
