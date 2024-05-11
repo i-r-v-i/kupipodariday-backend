@@ -1,6 +1,7 @@
 import { CreateUserDto } from './dto/create-user.dto';
 import {
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -76,6 +77,21 @@ export class UsersService {
   }
 
   async updateUser(userId: number, updateUserDto: UpdateUserDto) {
+    const usernameExists =
+      updateUserDto.username &&
+      (await this.userRepository.findOneBy({
+        username: updateUserDto.username,
+      }));
+    const emailExists =
+      updateUserDto.email &&
+      (await this.userRepository.findOneBy({ email: updateUserDto.email }));
+
+    if (usernameExists || emailExists) {
+      throw new ConflictException(
+        'Пользователь с таким логином или email уже существует',
+      );
+    }
+
     if (updateUserDto.password) {
       updateUserDto.password = await bcrypt.hash(
         updateUserDto.password,
@@ -86,7 +102,11 @@ export class UsersService {
     return await this.userRepository.findOneBy({ id: userId });
   }
 
-  async remove(id: number) {
-    return await this.userRepository.delete(id);
+  async remove(userId: number, id: number) {
+    if (userId !== id) {
+      throw new ForbiddenException('Нельзя удалить чужой профиль');
+    } else {
+      return await this.userRepository.delete(id);
+    }
   }
 }
