@@ -31,23 +31,23 @@ export class OffersService {
       throw new ForbiddenException('Нельзя скидываться на свой подарок');
     }
 
-    if (createOfferDto.amount + wish.raised > wish.price) {
+    if (wish.raised > wish.price) {
       throw new BadRequestException(
         `Сумма собранных средств не может превышать стоимость подарка, Вы можете добавить только недостающую сумму - ${wish.price - wish.raised}`,
       );
     }
-
-    await this.offerRepository.save({
-      ...createOfferDto,
-      item: wish,
-      user,
-    });
 
     await this.wishRepository.increment(
       { id: wish.id },
       'raised',
       createOfferDto.amount,
     );
+
+    return await this.offerRepository.save({
+      ...createOfferDto,
+      item: wish,
+      user,
+    });
   }
 
   async findAll() {
