@@ -77,8 +77,13 @@ export class WishlistsService {
     return this.wishlistRepository.update(id, updateWishlistDto);
   }
 
-  async removeWishlist(id: number) {
+  async removeWishlist(id: number, userId: number) {
     const wishlist = await this.findOne(id);
+    if (wishlist.owner.id !== userId) {
+      throw new ForbiddenException(
+        'Вы не можете удалять чужие списки подарков',
+      );
+    }
     await this.wishlistRepository.remove(wishlist);
     return wishlist;
   }

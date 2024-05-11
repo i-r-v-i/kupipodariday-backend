@@ -49,7 +49,8 @@ export class WishlistsController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: number) {
-    return this.wishlistsService.removeWishlist(id);
+  @UseGuards(JwtAuthGuard)
+  remove(@Param('id') id: number, @Request() req) {
+    return this.wishlistsService.removeWishlist(id, req.user.id);
   }
 }
