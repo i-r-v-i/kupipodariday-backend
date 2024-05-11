@@ -20,10 +20,14 @@ export class Wishlist extends CommonEntity {
   @IsUrl()
   image: string;
 
-  @ManyToOne(() => User, (user) => user.wishlists)
+  @ManyToOne(() => User, (user) => user.wishlists, {
+    onDelete: 'CASCADE',
+  })
   owner: User;
 
-  @ManyToMany(() => Wish, (wish) => wish.wishlists)
+  @ManyToMany(() => Wish, (wish) => wish.wishlists, {
+    onDelete: 'CASCADE',
+  })
   @JoinTable()
   items: Wish[];
 }

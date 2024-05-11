@@ -45,12 +45,18 @@ export class Wish extends CommonEntity {
   @IsNumber()
   copied: number;
 
-  @ManyToOne(() => User, (user) => user.wishes)
+  @ManyToOne(() => User, (user) => user.wishes, {
+    onDelete: 'CASCADE',
+  })
   owner: User;
 
-  @ManyToMany(() => Wishlist, (wishlist) => wishlist.items)
+  @ManyToMany(() => Wishlist, (wishlist) => wishlist.items, {
+    onDelete: 'CASCADE',
+  })
   wishlists: Wishlist[];
 
-  @OneToMany(() => Offer, (offer) => offer.item)
+  @OneToMany(() => Offer, (offer) => offer.item, {
+    onDelete: 'CASCADE',
+  })
   offers: Offer[];
 }

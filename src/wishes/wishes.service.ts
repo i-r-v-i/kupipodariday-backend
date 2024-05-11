@@ -23,7 +23,7 @@ export class WishesService {
       owner: { id },
     };
 
-    await this.wishRepository.save(wish);
+    return await this.wishRepository.save(wish);
   }
 
   async findAll() {
@@ -78,24 +78,30 @@ export class WishesService {
     return await this.wishRepository.update(id, updateWishDto);
   }
 
-  async copy(id: number, user: User) {
-    const wish = await this.findOne(id);
-    const { name, description, image, link, price } = wish;
+  async copy(wishId: number, user: User) {
+    const wish = await this.findOne(wishId);
+    // const { id, name, description, image, link, price } = wish;
+    if (!wish) {
+      throw new NotFoundException('Подарок не найден');
+    }
+    console.log(wish.owner.id, wish);
+    if (wish.owner.id === user.id) {
+      throw new ForbiddenException('Нельзя скопировать свой же подарок');
+    }
 
-    const newWish = this.wishRepository.create({
-      name,
-      link,
-      image,
-      price,
-      description,
-      owner: user,
-    });
-    const copiedWish = await this.wishRepository.save(newWish);
+    const copyWishDto = {
+      name: wish.name,
+      link: wish.link,
+      image: wish.image,
+      price: wish.price,
+      description: wish.description,
+      copied: wish.copied + 1,
+    };
 
-    wish.copied += 1;
-    await this.wishRepository.save(wish);
+    const copyWish = await this.createWish(copyWishDto, user.id);
 
-    return copiedWish;
+    return `Подарок ${copyWish.name} скопирован в ваш вишлист`;
+    // return copiedWish;
   }
 
   async removeWish(id: number, userId: number) {
