@@ -1,11 +1,4 @@
-import {
-  IsInt,
-  IsNumber,
-  IsPositive,
-  IsString,
-  IsUrl,
-  Length,
-} from 'class-validator';
+import { IsNumber, IsPositive, IsString, IsUrl, Length } from 'class-validator';
 import { CommonEntity } from 'src/common-entity/common-entity';
 import { Offer } from 'src/offers/entities/offer.entity';
 import { User } from 'src/users/entities/user.entity';
