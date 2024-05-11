@@ -66,6 +66,6 @@ export class WishesController {
   @Post(':id/copy')
   @UseGuards(JwtAuthGuard)
   copyWithById(@Param('id') id: number, @Request() req) {
-    return this.wishesService.copy(id, req.user);
+    return this.wishesService.copyWish(id, req.user);
   }
 }

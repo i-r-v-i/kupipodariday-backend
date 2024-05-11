@@ -78,9 +78,9 @@ export class WishesService {
     return await this.wishRepository.update(id, updateWishDto);
   }
 
-  async copy(wishId: number, user: User) {
+  async copyWish(wishId: number, user: User) {
     const wish = await this.findOne(wishId);
-    // const { id, name, description, image, link, price } = wish;
+
     if (!wish) {
       throw new NotFoundException('Подарок не найден');
     }
@@ -101,7 +101,6 @@ export class WishesService {
     const copyWish = await this.createWish(copyWishDto, user.id);
 
     return `Подарок ${copyWish.name} скопирован в ваш вишлист`;
-    // return copiedWish;
   }
 
   async removeWish(id: number, userId: number) {
